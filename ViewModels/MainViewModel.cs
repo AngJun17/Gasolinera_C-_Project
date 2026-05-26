@@ -11,19 +11,29 @@ namespace GasoStation.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly HistorialService _historial = new();
-        private readonly ArduinoService  _arduino    = new();
+        private readonly HistorialService  _historial   = new();
+        private readonly ArduinoService   _arduino     = new();
+        private readonly SimuladorService _simulador   = new();
+
+        private bool _modoSimulacion = true; // true = sin arduino, false = arduino real
+        public bool ModoSimulacion
+        {
+            get => _modoSimulacion;
+            set { SetProperty(ref _modoSimulacion, value); OnPropertyChanged(nameof(TextoModo)); }
+        }
+        public string TextoModo => _modoSimulacion ? "🧪 Modo simulación" : "🔌 Arduino real";
 
         // Bombas 
         public ObservableCollection<BombaViewModel> Bombas { get; } = new();
         public ObservableCollection<BombaViewModel> BombasLibres { get; } = new();
 
-        //  Formulario 
+        // Formulario 
         private string _clienteNuevo = "";
         public string ClienteNuevo { get => _clienteNuevo; set => SetProperty(ref _clienteNuevo, value); }
 
         private BombaViewModel? _bombaSeleccionada;
-        public BombaViewModel? BombaSeleccionada { get => _bombaSeleccionada; set => SetProperty(ref _bombaSeleccionada, value); }
+        public BombaViewModel? BombaSeleccionada { get => _bombaSeleccionada; 
+            set => SetProperty(ref _bombaSeleccionada, value); }
 
         // 0 = Prepago, 1 = TanqueLleno
         private int _tipoSeleccionado = 0;
@@ -76,7 +86,9 @@ namespace GasoStation.ViewModels
         public RelayCommand NavHistorialCommand    { get; }
         public RelayCommand NavCierreCajaCommand   { get; }
 
-      
+        public RelayCommand ToggleSimulacionCommand { get; }
+
+        
         public MainViewModel()
         {
             for (int i = 1; i <= 4; i++)
@@ -85,15 +97,33 @@ namespace GasoStation.ViewModels
             ActualizarBombasLibres();
             ActualizarEstadisticas();
 
-            _arduino.MensajeRecibido += OnMensajeArduino;
-            _arduino.ErrorRecibido   += msg => MessageBox.Show(msg, "Error Serial");
+            _arduino.MensajeRecibido   += OnMensajeArduino;
+            _arduino.ErrorRecibido     += msg => System.Windows.MessageBox.Show(msg, "Error Serial");
+            _simulador.MensajeRecibido += OnMensajeArduino; // mismo handler
 
-            IniciarServicioCommand = new RelayCommand(_ => IniciarServicio(), _ => PuedeIniciar());
-            CancelarCommand        = new RelayCommand(_ => LimpiarFormulario());
-            DetenerBombaCommand    = new RelayCommand(b => DetenerBomba(b as BombaViewModel));
-            NavPanelCommand        = new RelayCommand(_ => { /* cambiar vista */ });
-            NavHistorialCommand    = new RelayCommand(_ => { /* cambiar vista */ });
-            NavCierreCajaCommand   = new RelayCommand(_ => { /* cambiar vista */ });
+            IniciarServicioCommand  = new RelayCommand(_ => IniciarServicio(),  _ => PuedeIniciar());
+            CancelarCommand         = new RelayCommand(_ => LimpiarFormulario());
+            DetenerBombaCommand     = new RelayCommand(b  => DetenerBomba(b as BombaViewModel));
+            NavPanelCommand         = new RelayCommand(_ => { });
+            NavHistorialCommand     = new RelayCommand(_ => { });
+            NavCierreCajaCommand    = new RelayCommand(_ => { });
+            ToggleSimulacionCommand = new RelayCommand(_ =>
+            {
+                if (ModoSimulacion)
+                {
+                    // Intentar conectar Arduino real
+                    bool ok = _arduino.Conectar(PuertoSeleccionado);
+                    if (ok) { ModoSimulacion = false; Conectado = true; }
+                    else System.Windows.MessageBox.Show(
+                        $"No se pudo conectar en {PuertoSeleccionado}.\nSiguiendo en modo simulación.", "Conexión");
+                }
+                else
+                {
+                    _arduino.Desconectar();
+                    Conectado = false;
+                    ModoSimulacion = true;
+                }
+            });
         }
 
         // Lógica 
@@ -110,29 +140,36 @@ namespace GasoStation.ViewModels
             var tipo   = EsPrepago ? TipoServicio.Prepago : TipoServicio.TanqueLleno;
             var litros = EsPrepago && PrecioLitro > 0 ? MontoPrepago / PrecioLitro : 0;
 
-            // Guardar en historial
             var abast = new Abastecimiento
             {
-                BombaId        = BombaSeleccionada.Id,
-                Cliente        = ClienteNuevo,
-                Tipo           = tipo,
-                MontoPagado    = EsPrepago ? MontoPrepago : 0,
+                BombaId           = BombaSeleccionada.Id,
+                Cliente           = ClienteNuevo,
+                Tipo              = tipo,
+                MontoPagado       = EsPrepago ? MontoPrepago : 0,
                 LitrosSolicitados = litros,
-                FechaHora      = DateTime.Now
+                FechaHora         = DateTime.Now
             };
             _historial.Agregar(abast);
 
-            // Actualizar UI bomba
             BombaSeleccionada.IniciarServicio(ClienteNuevo, tipo, abast.MontoPagado, litros);
 
-            // Enviar JSON a Arduino
-            await _arduino.EnviarComandoAsync(new ComandoBomba
+            if (ModoSimulacion)
             {
-                tipo      = "iniciar",
-                bomba_id  = BombaSeleccionada.Id,
-                modo      = EsPrepago ? "prepago" : "tanque_lleno",
-                litros_max = litros
-            });
+                _simulador.IniciarBomba(
+                    BombaSeleccionada.Id,
+                    EsPrepago ? "prepago" : "tanque_lleno",
+                    litros);
+            }
+            else
+            {
+                await _arduino.EnviarComandoAsync(new ComandoBomba
+                {
+                    tipo       = "iniciar",
+                    bomba_id   = BombaSeleccionada.Id,
+                    modo       = EsPrepago ? "prepago" : "tanque_lleno",
+                    litros_max = litros
+                });
+            }
 
             LimpiarFormulario();
             ActualizarBombasLibres();
@@ -141,7 +178,11 @@ namespace GasoStation.ViewModels
         private async void DetenerBomba(BombaViewModel? bomba)
         {
             if (bomba == null || !bomba.EstaActiva) return;
-            await _arduino.EnviarComandoAsync(new ComandoBomba { tipo = "detener", bomba_id = bomba.Id });
+
+            if (ModoSimulacion)
+                _simulador.DetenerBomba(bomba.Id);
+            else
+                await _arduino.EnviarComandoAsync(new ComandoBomba { tipo = "detener", bomba_id = bomba.Id });
         }
 
         private void OnMensajeArduino(RespuestaBomba resp)

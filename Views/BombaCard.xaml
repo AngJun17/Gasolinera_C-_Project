@@ -23,7 +23,7 @@
                                Foreground="{StaticResource BrushVerde}"/>
                 </Border>
 
-                <!-- Badge ACTIVA con actualizacion de estado -->
+                <!-- Badge ACTIVA con actualizacion de estado  -->
                 <Border HorizontalAlignment="Right" CornerRadius="99" Padding="8,2"
                         Background="{StaticResource BrushRojoOscuro}"
                         Visibility="{Binding EstaActiva, Converter={StaticResource BoolVis}}">
@@ -48,7 +48,7 @@
                 </Border>
             </Grid>
 
-            <!-- Icono bomba SVG -->
+            <!--Icono bomba SVG -->
             <Grid Height="54" Margin="0,0,0,8">
                 <Canvas Width="44" Height="44"
                         HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -99,7 +99,7 @@
                 </Grid>
             </StackPanel>
 
-            <!-- Info bomba activa -->
+            <!-- Info bomba ACTIVA -->
             <StackPanel Margin="0,0,0,8"
                         Visibility="{Binding EstaActiva, Converter={StaticResource BoolVis}}">
                 <Grid Margin="0,0,0,2">

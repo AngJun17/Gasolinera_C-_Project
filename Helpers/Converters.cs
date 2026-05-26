@@ -7,7 +7,7 @@ using GasoStation.Models;
 
 namespace GasoStation.Helpers
 {
-    //bool → Visibility 
+    // bool → Visibility 
     public class BoolToVisibilityConverter : IValueConverter
     {
         public bool Invert { get; set; } = false;
@@ -20,7 +20,7 @@ namespace GasoStation.Helpers
         public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
     }
 
-    //EstadoBomba → color del borde de la tarjeta 
+    //  EstadoBomba → color del borde de la tarjeta 
     public class EstadoToBorderBrushConverter : IValueConverter
     {
         public object Convert(object value, Type t, object p, CultureInfo c)
@@ -37,7 +37,7 @@ namespace GasoStation.Helpers
         public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
     }
 
-    //EstadoBomba → color del número e icono 
+    // EstadoBomba → color del número e icono 
     public class EstadoToNumColorConverter : IValueConverter
     {
         public object Convert(object value, Type t, object p, CultureInfo c)
@@ -54,7 +54,7 @@ namespace GasoStation.Helpers
         public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
     }
 
-    // TipoServicio → string legible 
+    // TipoServicio → string legible
     public class TipoServicioConverter : IValueConverter
     {
         public object Convert(object value, Type t, object p, CultureInfo c)

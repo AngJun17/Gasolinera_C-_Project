@@ -8,7 +8,7 @@ namespace GasoStation.ViewModels
         public int Id { get; }
         public string NombreBomba => $"Bomba {Id}";
 
-        // Estado
+        // Estado 
         private EstadoBomba _estado = EstadoBomba.Libre;
         public EstadoBomba Estado
         {
@@ -23,7 +23,7 @@ namespace GasoStation.ViewModels
         public bool EstaLibre  => Estado == EstadoBomba.Libre;
         public bool EstaActiva => Estado == EstadoBomba.Activa;
 
-        // Servicio activo
+        // Servicio activo 
         private string _clienteActual = "";
         public string ClienteActual { get => _clienteActual; set => SetProperty(ref _clienteActual, value); }
 
@@ -50,7 +50,7 @@ namespace GasoStation.ViewModels
         private string _ultimoCliente = "—";
         public string UltimoCliente { get => _ultimoCliente; set => SetProperty(ref _ultimoCliente, value); }
 
-        // Calculadas
+        // Calculadas 
         public string EtiquetaTipo => Tipo == TipoServicio.Prepago
             ? $"Prepago · Q{MontoPagado:F2}"
             : "Tanque lleno";
@@ -73,7 +73,7 @@ namespace GasoStation.ViewModels
         // Constructor 
         public BombaViewModel(int id) => Id = id;
 
-        //Acciones 
+        // Acciones 
         public void IniciarServicio(string cliente, TipoServicio tipo, decimal monto, decimal litros)
         {
             ClienteActual     = cliente;

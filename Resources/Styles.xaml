@@ -27,7 +27,7 @@
         <Setter Property="Margin"      Value="0,0,0,3"/>
     </Style>
 
-    <!-- INPUTS -->
+    <!-- INPUTS-->
 
     <Style TargetType="TextBox">
         <Setter Property="Background"       Value="{StaticResource BrushFondoInput}"/>
@@ -54,18 +54,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="ComboBox">
-        <Setter Property="Background"       Value="{StaticResource BrushFondoInput}"/>
-        <Setter Property="Foreground"       Value="{StaticResource BrushTexto}"/>
-        <Setter Property="BorderBrush"      Value="{StaticResource BrushBordeInput}"/>
-        <Setter Property="BorderThickness"  Value="1"/>
-        <Setter Property="Padding"          Value="8,5"/>
-        <Setter Property="FontSize"         Value="11"/>
-        <Setter Property="FontFamily"       Value="Segoe UI"/>
-        <Setter Property="Height"           Value="28"/>
-    </Style>
-
-    <!-- BOTONES\-->
+    <!-- BOTONES-->
 
     <!-- Botón primario rojo -->
     <Style x:Key="BtnPrimario" TargetType="Button">
@@ -159,6 +148,95 @@
     <Style x:Key="BtnNavActivo" TargetType="Button" BasedOn="{StaticResource BtnNav}">
         <Setter Property="Background"  Value="{StaticResource BrushAcento}"/>
         <Setter Property="Foreground"  Value="White"/>
+    </Style>
+
+    <!--COMBOBOX OSCURO COMPLETO  -->
+    <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.ColumnSpan="2"
+                    Background="{StaticResource BrushFondoInput}"
+                    BorderBrush="{StaticResource BrushBordeInput}"
+                    BorderThickness="1" CornerRadius="5"/>
+            <Border Grid.Column="0" Background="Transparent"/>
+            <Path Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                  Data="M0,0 L4,4 L8,0 Z"
+                  Fill="{StaticResource BrushTextoSecun}"/>
+        </Grid>
+    </ControlTemplate>
+
+    <Style TargetType="ComboBox">
+        <Setter Property="Background"       Value="{StaticResource BrushFondoInput}"/>
+        <Setter Property="Foreground"       Value="{StaticResource BrushTexto}"/>
+        <Setter Property="BorderBrush"      Value="{StaticResource BrushBordeInput}"/>
+        <Setter Property="BorderThickness"  Value="1"/>
+        <Setter Property="Height"           Value="28"/>
+        <Setter Property="FontSize"         Value="11"/>
+        <Setter Property="FontFamily"       Value="Segoe UI"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <ToggleButton Template="{StaticResource ComboBoxToggleButton}"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay,
+                                          RelativeSource={RelativeSource TemplatedParent}}"
+                                      Focusable="False" ClickMode="Press"/>
+                        <ContentPresenter Margin="8,0,24,0"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentStringFormat="{TemplateBinding SelectedValuePath}"
+                                          VerticalAlignment="Center"
+                                          IsHitTestVisible="False"
+                                          TextBlock.Foreground="{StaticResource BrushTexto}"/>
+                        <Popup IsOpen="{TemplateBinding IsDropDownOpen}"
+                               AllowsTransparency="True" Focusable="False"
+                               PopupAnimation="Slide" Placement="Bottom">
+                            <Border Background="{StaticResource BrushFondoPanel}"
+                                    BorderBrush="{StaticResource BrushBorde}"
+                                    BorderThickness="1" CornerRadius="5"
+                                    MinWidth="{TemplateBinding ActualWidth}"
+                                    MaxHeight="200">
+                                <ScrollViewer>
+                                    <ItemsPresenter/>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Foreground"        Value="{StaticResource BrushTexto}"/>
+                    <Setter Property="Background"        Value="Transparent"/>
+                    <Setter Property="Padding"           Value="8,5"/>
+                    <Setter Property="FontSize"          Value="11"/>
+                    <Setter Property="FontFamily"        Value="Segoe UI"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ComboBoxItem">
+                                <Border Background="{TemplateBinding Background}"
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter TextBlock.Foreground="{StaticResource BrushTexto}"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsHighlighted" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource BrushFondoInput}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource BrushAcento}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

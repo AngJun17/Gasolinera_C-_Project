@@ -3,13 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:GasoStation.Views"
         Title="GasoStation — Panel Central"
-        Height="780" Width="920"
-        MinHeight="700" MinWidth="900"
+        Height="700" Width="980"
+        MinHeight="600" MinWidth="880"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent">
 
-    <!-- Ventana con borde -->
+    <!-- Ventana con borde redondeado -->
     <Border CornerRadius="10"
             Background="{StaticResource BrushFondoApp}"
             BorderBrush="#0F3460" BorderThickness="1">
@@ -19,13 +19,11 @@
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <!-- Title bar -->
-                <RowDefinition Height="*"/>
-                <!-- Content -->
+                <RowDefinition Height="40"/>   <!-- Title bar -->
+                <RowDefinition Height="*"/>    <!-- Content -->
             </Grid.RowDefinitions>
 
-            <!--TITLE BAR -->
+            <!-- TITLE BAR -->
             <Border Grid.Row="0"
                     Background="{StaticResource BrushFondoPanel}"
                     BorderBrush="#0F3460" BorderThickness="0,0,0,1"
@@ -43,23 +41,17 @@
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
                         <Button Width="12" Height="12" Margin="0,0,6,0" Click="CloseBtn_Click">
                             <Button.Template>
-                                <ControlTemplate>
-                                    <Ellipse Width="12" Height="12" Fill="#FF5F56"/>
-                                </ControlTemplate>
+                                <ControlTemplate><Ellipse Width="12" Height="12" Fill="#FF5F56"/></ControlTemplate>
                             </Button.Template>
                         </Button>
                         <Button Width="12" Height="12" Margin="0,0,6,0">
                             <Button.Template>
-                                <ControlTemplate>
-                                    <Ellipse Width="12" Height="12" Fill="#FFBD2E"/>
-                                </ControlTemplate>
+                                <ControlTemplate><Ellipse Width="12" Height="12" Fill="#FFBD2E"/></ControlTemplate>
                             </Button.Template>
                         </Button>
                         <Button Width="12" Height="12">
                             <Button.Template>
-                                <ControlTemplate>
-                                    <Ellipse Width="12" Height="12" Fill="#27C93F"/>
-                                </ControlTemplate>
+                                <ControlTemplate><Ellipse Width="12" Height="12" Fill="#27C93F"/></ControlTemplate>
                             </Button.Template>
                         </Button>
                     </StackPanel>
@@ -75,28 +67,69 @@
 
                     <!-- Estado Arduino (derecha) -->
                     <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Ellipse Width="8" Height="8" Fill="#27C93F" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding TextoConexion}" FontSize="11"
-                                   Foreground="{StaticResource BrushTextoSecun}"/>
-                        <TextBlock Text=" · " FontSize="11" Foreground="{StaticResource BrushTextoSecun}"/>
-                        <TextBlock Text="{Binding PuertoSeleccionado}" FontSize="11"
-                                   Foreground="{StaticResource BrushTextoSecun}"/>
-                        <TextBlock Text=" · 9600 baud" FontSize="11"
-                                   Foreground="{StaticResource BrushTextoSecun}"/>
+                        <!-- Botón toggle simulación/arduino -->
+                        <Button Command="{Binding ToggleSimulacionCommand}"
+                                Margin="0,0,12,0" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{StaticResource BrushFondoInput}"
+                                            CornerRadius="4" Padding="8,3">
+                                        <TextBlock Text="{Binding TextoModo}" FontSize="10"
+                                                   Foreground="{StaticResource BrushTextoSecun}"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Opacity" Value="0.8"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <Ellipse Width="8" Height="8" Margin="0,0,5,0">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Fill" Value="#555"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ModoSimulacion}" Value="True">
+                                            <Setter Property="Fill" Value="#F5C842"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Conectado}" Value="True">
+                                            <Setter Property="Fill" Value="#27C93F"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock FontSize="11" Foreground="{StaticResource BrushTextoSecun}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="Desconectado"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ModoSimulacion}" Value="True">
+                                            <Setter Property="Text" Value="Simulación activa"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Conectado}" Value="True">
+                                            <Setter Property="Text" Value="Arduino conectado"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Text=" · COM3 · 9600 baud" FontSize="11"
+                                   Foreground="{StaticResource BrushTextoSecun}"
+                                   Visibility="{Binding Conectado, Converter={StaticResource BoolVis}}"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <!--BODY  -->
+            <!-- BODY -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="190"/>
-                    <!-- Sidebar -->
-                    <ColumnDefinition Width="*"/>
-                    <!-- Main content -->
+                    <ColumnDefinition Width="190"/>   <!-- Sidebar -->
+                    <ColumnDefinition Width="*"/>      <!-- Main content -->
                 </Grid.ColumnDefinitions>
 
-                <!-- SIDEBAR -->
+                <!--SIDEBAR -->
                 <Border Grid.Column="0"
                         Background="{StaticResource BrushFondoPanel}"
                         BorderBrush="#0F3460" BorderThickness="0,0,1,0">
@@ -152,7 +185,7 @@
                             </Button>
                         </StackPanel>
 
-                        <!-- Precio del dia -->
+                        <!-- Precio del día (abajo en sidebar) -->
                         <Border Grid.Row="1" Margin="12,0,12,14"
                                 Padding="0,12,0,0"
                                 BorderBrush="#0F3460" BorderThickness="0,1,0,0">
@@ -184,7 +217,7 @@
                             <local:BombaCard DataContext="{Binding Bombas[3]}" Margin="5,5,0,0"/>
                         </UniformGrid>
 
-                        <!-- Estadisticas -->
+                        <!-- STATS ROW -->
                         <UniformGrid Columns="3" Margin="0,0,0,14">
                             <!-- Ingresos hoy -->
                             <Border Margin="0,0,5,0" Padding="10,10" CornerRadius="8"
@@ -230,7 +263,7 @@
                             </Border>
                         </UniformGrid>
 
-                        <!-- Nuevo Servicio -->
+                        <!-- FORMULARIO NUEVO SERVICIO -->
                         <TextBlock Text="INICIAR SERVICIO" Style="{StaticResource TextoSeccion}"/>
                         <Border Padding="11,11" CornerRadius="10"
                                 Background="{StaticResource BrushFondoPanel}"
@@ -239,38 +272,39 @@
                                 <!-- Fila 1: cliente + bomba -->
                                 <Grid Margin="0,0,0,8">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="8"/>
-                                        <ColumnDefinition/>
+                                        <ColumnDefinition/><ColumnDefinition Width="8"/><ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="Nombre del cliente" Style="{StaticResource TextoLabel}"/>
                                         <TextBox Text="{Binding ClienteNuevo, UpdateSourceTrigger=PropertyChanged}"
-                                                 Height="37"/>
+                                                 Height="36"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="2">
                                         <TextBlock Text="Bomba" Style="{StaticResource TextoLabel}"/>
                                         <ComboBox ItemsSource="{Binding BombasLibres}"
-                                                  SelectedItem="{Binding BombaSeleccionada}"
-                                                  DisplayMemberPath="NombreBomba" Height="31" Foreground="#FF0B0101" BorderBrush="#FF5B7CBB"/>
+                                                  SelectedItem="{Binding BombaSeleccionada}" Height="35">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding NombreBomba}"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
                                     </StackPanel>
                                 </Grid>
 
                                 <!-- Fila 2: tipo + monto -->
                                 <Grid Margin="0,0,0,8">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="8"/>
-                                        <ColumnDefinition/>
+                                        <ColumnDefinition/><ColumnDefinition Width="8"/><ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="Tipo de servicio" Style="{StaticResource TextoLabel}"/>
-                                        <ComboBox SelectedIndex="{Binding TipoSeleccionado}" >
-                                            <ComboBoxItem Content="Prepago" />
-                                            <ComboBoxItem Content="Tanque lleno" />
+                                        <ComboBox SelectedIndex="{Binding TipoSeleccionado}" Height="36">
+                                            <ComboBoxItem Content="Prepago"/>
+                                            <ComboBoxItem Content="Tanque lleno"/>
                                         </ComboBox>
                                     </StackPanel>
-                                    <StackPanel Grid.Column="3">
+                                    <StackPanel Grid.Column="2">
                                         <TextBlock Text="Monto (Q) — Solo prepago" Style="{StaticResource TextoLabel}"/>
                                         <TextBox Text="{Binding MontoPrepago, UpdateSourceTrigger=PropertyChanged}"
                                                  IsEnabled="{Binding EsPrepago}" Height="36"/>

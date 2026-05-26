@@ -19,7 +19,7 @@ namespace GasoStation.Services
             Cargar();
         }
 
-        //CRUD 
+        // CRUD 
 
         public void Agregar(Abastecimiento a)
         {
@@ -36,7 +36,7 @@ namespace GasoStation.Services
 
         public List<Abastecimiento> ObtenerTodos() => _historial.ToList();
 
-        //INFORMES 
+        // INFORMES 
 
         public List<Abastecimiento> CierreDiario(DateTime fecha)
             => _historial.Where(a => a.FechaHora.Date == fecha.Date).ToList();
@@ -66,7 +66,7 @@ namespace GasoStation.Services
         public int ServiciosHoy()
             => CierreDiario(DateTime.Today).Count;
 
-        //PERSISTENCIA
+        // PERSISTENCIA 
 
         private void Guardar()
         {
