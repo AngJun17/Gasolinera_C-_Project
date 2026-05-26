@@ -1,0 +1,296 @@
+<Window x:Class="GasoStation.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:GasoStation.Views"
+        Title="GasoStation — Panel Central"
+        Height="780" Width="920"
+        MinHeight="700" MinWidth="900"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <!-- Ventana con borde -->
+    <Border CornerRadius="10"
+            Background="{StaticResource BrushFondoApp}"
+            BorderBrush="#0F3460" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" BlurRadius="24" Opacity="0.6" ShadowDepth="0"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <!-- Title bar -->
+                <RowDefinition Height="*"/>
+                <!-- Content -->
+            </Grid.RowDefinitions>
+
+            <!--TITLE BAR -->
+            <Border Grid.Row="0"
+                    Background="{StaticResource BrushFondoPanel}"
+                    BorderBrush="#0F3460" BorderThickness="0,0,0,1"
+                    CornerRadius="10,10,0,0"
+                    MouseLeftButtonDown="TitleBar_MouseDown">
+                <Grid Margin="12,0,12,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Botones macOS -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                        <Button Width="12" Height="12" Margin="0,0,6,0" Click="CloseBtn_Click">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Ellipse Width="12" Height="12" Fill="#FF5F56"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <Button Width="12" Height="12" Margin="0,0,6,0">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Ellipse Width="12" Height="12" Fill="#FFBD2E"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <Button Width="12" Height="12">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Ellipse Width="12" Height="12" Fill="#27C93F"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Icono + Título -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,0">
+                        <Border Width="18" Height="18" Background="{StaticResource BrushAcento}" CornerRadius="4" Margin="0,0,6,0">
+                            <TextBlock Text="⛽" FontSize="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="GasoStation — Panel Central" FontSize="13" FontWeight="Medium"
+                                   Foreground="{StaticResource BrushTexto}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Estado Arduino (derecha) -->
+                    <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse Width="8" Height="8" Fill="#27C93F" Margin="0,0,5,0"/>
+                        <TextBlock Text="{Binding TextoConexion}" FontSize="11"
+                                   Foreground="{StaticResource BrushTextoSecun}"/>
+                        <TextBlock Text=" · " FontSize="11" Foreground="{StaticResource BrushTextoSecun}"/>
+                        <TextBlock Text="{Binding PuertoSeleccionado}" FontSize="11"
+                                   Foreground="{StaticResource BrushTextoSecun}"/>
+                        <TextBlock Text=" · 9600 baud" FontSize="11"
+                                   Foreground="{StaticResource BrushTextoSecun}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!--BODY  -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="190"/>
+                    <!-- Sidebar -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- Main content -->
+                </Grid.ColumnDefinitions>
+
+                <!-- SIDEBAR -->
+                <Border Grid.Column="0"
+                        Background="{StaticResource BrushFondoPanel}"
+                        BorderBrush="#0F3460" BorderThickness="0,0,1,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Margin="12,14,12,0">
+                            <TextBlock Text="NAVEGACIÓN" Style="{StaticResource TextoSeccion}"
+                                       Margin="4,0,0,8"/>
+
+                            <!-- Botones nav -->
+                            <Button Style="{StaticResource BtnNavActivo}" Margin="0,0,0,2"
+                                    Command="{Binding NavPanelCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="7" Height="7" Fill="White" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Panel de Bombas" Foreground="White"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource BtnNav}" Margin="0,0,0,2"
+                                    Command="{Binding NavHistorialCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="7" Height="7" Fill="{StaticResource BrushTextoSecun}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Historial"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource BtnNav}" Margin="0,0,0,2"
+                                    Command="{Binding NavCierreCajaCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="7" Height="7" Fill="{StaticResource BrushTextoSecun}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Cierre de Caja"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource BtnNav}" Margin="0,0,0,2">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="7" Height="7" Fill="{StaticResource BrushTextoSecun}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Informe Prepago"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource BtnNav}" Margin="0,0,0,2">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="7" Height="7" Fill="{StaticResource BrushTextoSecun}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Informe Tanque Lleno"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource BtnNav}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="7" Height="7" Fill="{StaticResource BrushTextoSecun}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Uso por Bomba"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Precio del dia -->
+                        <Border Grid.Row="1" Margin="12,0,12,14"
+                                Padding="0,12,0,0"
+                                BorderBrush="#0F3460" BorderThickness="0,1,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Precio del día" Style="{StaticResource TextoLabel}" Margin="0,0,0,2"/>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding PrecioLitro, StringFormat='Q {0:F2}'}"
+                                               FontSize="20" FontWeight="Medium"
+                                               Foreground="{StaticResource BrushAcento}"/>
+                                    <TextBlock Text="/L" FontSize="11"
+                                               Foreground="{StaticResource BrushTextoSecun}"
+                                               VerticalAlignment="Bottom" Margin="2,0,0,2"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- CONTENIDO PRINCIPAL -->
+                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="16,16,16,16">
+
+                        <!-- ESTADO DE BOMBAS -->
+                        <TextBlock Text="ESTADO DE BOMBAS" Style="{StaticResource TextoSeccion}"/>
+                        <UniformGrid Columns="2" Margin="0,0,0,14">
+                            <local:BombaCard DataContext="{Binding Bombas[0]}" Margin="0,0,5,5"/>
+                            <local:BombaCard DataContext="{Binding Bombas[1]}" Margin="5,0,0,5"/>
+                            <local:BombaCard DataContext="{Binding Bombas[2]}" Margin="0,5,5,0"/>
+                            <local:BombaCard DataContext="{Binding Bombas[3]}" Margin="5,5,0,0"/>
+                        </UniformGrid>
+
+                        <!-- Estadisticas -->
+                        <UniformGrid Columns="3" Margin="0,0,0,14">
+                            <!-- Ingresos hoy -->
+                            <Border Margin="0,0,5,0" Padding="10,10" CornerRadius="8"
+                                    Background="{StaticResource BrushFondoPanel}"
+                                    BorderBrush="#0F3460" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Ingresos hoy" Style="{StaticResource TextoLabel}"/>
+                                    <TextBlock Text="{Binding TotalHoy, Converter={StaticResource QuetzalConv}}"
+                                               FontSize="18" FontWeight="Medium" Foreground="#27C93F"/>
+                                    <TextBlock Text="↑ 14% vs ayer" FontSize="10"
+                                               Foreground="{StaticResource BrushTextoSecun}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <!-- Servicios hoy -->
+                            <Border Margin="5,0,5,0" Padding="10,10" CornerRadius="8"
+                                    Background="{StaticResource BrushFondoPanel}"
+                                    BorderBrush="#0F3460" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Servicios hoy" Style="{StaticResource TextoLabel}"/>
+                                    <TextBlock Text="{Binding ServiciosHoy}"
+                                               FontSize="18" FontWeight="Medium"
+                                               Foreground="{StaticResource BrushTexto}"/>
+                                    <TextBlock FontSize="10" Foreground="{StaticResource BrushTextoSecun}" Margin="0,2,0,0">
+                                        <Run Text="{Binding ServiciosPrepago}"/>
+                                        <Run Text=" prepago · "/>
+                                        <Run Text="{Binding ServiciosTanqueLleno}"/>
+                                        <Run Text=" lleno"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                            <!-- Bomba más usada -->
+                            <Border Margin="5,0,0,0" Padding="10,10" CornerRadius="8"
+                                    Background="{StaticResource BrushFondoPanel}"
+                                    BorderBrush="#0F3460" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Bomba más usada" Style="{StaticResource TextoLabel}"/>
+                                    <TextBlock Text="{Binding BombaLider}"
+                                               FontSize="18" FontWeight="Medium"
+                                               Foreground="{StaticResource BrushAcento}"/>
+                                    <TextBlock Text="{Binding BombaLiderServicios, StringFormat='{}{0} servicios totales'}"
+                                               FontSize="10" Foreground="{StaticResource BrushTextoSecun}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+
+                        <!-- Nuevo Servicio -->
+                        <TextBlock Text="INICIAR SERVICIO" Style="{StaticResource TextoSeccion}"/>
+                        <Border Padding="11,11" CornerRadius="10"
+                                Background="{StaticResource BrushFondoPanel}"
+                                BorderBrush="#0F3460" BorderThickness="1">
+                            <StackPanel>
+                                <!-- Fila 1: cliente + bomba -->
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Nombre del cliente" Style="{StaticResource TextoLabel}"/>
+                                        <TextBox Text="{Binding ClienteNuevo, UpdateSourceTrigger=PropertyChanged}"
+                                                 Height="37"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Bomba" Style="{StaticResource TextoLabel}"/>
+                                        <ComboBox ItemsSource="{Binding BombasLibres}"
+                                                  SelectedItem="{Binding BombaSeleccionada}"
+                                                  DisplayMemberPath="NombreBomba" Height="31" Foreground="#FF0B0101" BorderBrush="#FF5B7CBB"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Fila 2: tipo + monto -->
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Tipo de servicio" Style="{StaticResource TextoLabel}"/>
+                                        <ComboBox SelectedIndex="{Binding TipoSeleccionado}" >
+                                            <ComboBoxItem Content="Prepago" />
+                                            <ComboBoxItem Content="Tanque lleno" />
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="3">
+                                        <TextBlock Text="Monto (Q) — Solo prepago" Style="{StaticResource TextoLabel}"/>
+                                        <TextBox Text="{Binding MontoPrepago, UpdateSourceTrigger=PropertyChanged}"
+                                                 IsEnabled="{Binding EsPrepago}" Height="36"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Botones -->
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Button Content="Cancelar" Style="{StaticResource BtnSecundario}"
+                                            Margin="0,0,6,0" Command="{Binding CancelarCommand}"/>
+                                    <Button Content="Iniciar Servicio →" Style="{StaticResource BtnPrimario}"
+                                            Command="{Binding IniciarServicioCommand}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </ScrollViewer>
+
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

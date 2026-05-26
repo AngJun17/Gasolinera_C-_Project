@@ -1,0 +1,22 @@
+<Application x:Class="GasoStation.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helpers="clr-namespace:GasoStation.Helpers"
+             StartupUri="Views/MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Colors.xaml"/>
+                <ResourceDictionary Source="Resources/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Converters registrados globalmente -->
+            <helpers:BoolToVisibilityConverter  x:Key="BoolVis"/>
+            <helpers:BoolToVisibilityConverter  x:Key="InvBoolVis" Invert="True"/>
+            <helpers:EstadoToBorderBrushConverter x:Key="BorderConv"/>
+            <helpers:EstadoToNumColorConverter  x:Key="NumColorConv"/>
+            <helpers:QuetzalConverter           x:Key="QuetzalConv"/>
+            <helpers:TipoServicioConverter      x:Key="TipoConv"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
