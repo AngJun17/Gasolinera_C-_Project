@@ -2,8 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:GasoStation.Views"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         Title="GasoStation — Panel Central"
-        Height="700" Width="980"
+        Height="680" Width="980"
         MinHeight="600" MinWidth="880"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -19,11 +20,13 @@
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>   <!-- Title bar -->
-                <RowDefinition Height="*"/>    <!-- Content -->
+                <RowDefinition Height="40"/>
+                <!-- Title bar -->
+                <RowDefinition Height="*"/>
+                <!-- Content -->
             </Grid.RowDefinitions>
 
-            <!-- TITLE BAR -->
+            <!-- ══ TITLE BAR ═══════════════════════════════════ -->
             <Border Grid.Row="0"
                     Background="{StaticResource BrushFondoPanel}"
                     BorderBrush="#0F3460" BorderThickness="0,0,0,1"
@@ -41,17 +44,23 @@
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
                         <Button Width="12" Height="12" Margin="0,0,6,0" Click="CloseBtn_Click">
                             <Button.Template>
-                                <ControlTemplate><Ellipse Width="12" Height="12" Fill="#FF5F56"/></ControlTemplate>
+                                <ControlTemplate>
+                                    <Ellipse Width="12" Height="12" Fill="#FF5F56"/>
+                                </ControlTemplate>
                             </Button.Template>
                         </Button>
                         <Button Width="12" Height="12" Margin="0,0,6,0">
                             <Button.Template>
-                                <ControlTemplate><Ellipse Width="12" Height="12" Fill="#FFBD2E"/></ControlTemplate>
+                                <ControlTemplate>
+                                    <Ellipse Width="12" Height="12" Fill="#FFBD2E"/>
+                                </ControlTemplate>
                             </Button.Template>
                         </Button>
                         <Button Width="12" Height="12">
                             <Button.Template>
-                                <ControlTemplate><Ellipse Width="12" Height="12" Fill="#27C93F"/></ControlTemplate>
+                                <ControlTemplate>
+                                    <Ellipse Width="12" Height="12" Fill="#27C93F"/>
+                                </ControlTemplate>
                             </Button.Template>
                         </Button>
                     </StackPanel>
@@ -122,14 +131,16 @@
                 </Grid>
             </Border>
 
-            <!-- BODY -->
+            <!-- ══ BODY ════════════════════════════════════════ -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="190"/>   <!-- Sidebar -->
-                    <ColumnDefinition Width="*"/>      <!-- Main content -->
+                    <ColumnDefinition Width="190"/>
+                    <!-- Sidebar -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- Main content -->
                 </Grid.ColumnDefinitions>
 
-                <!--SIDEBAR -->
+                <!-- ── SIDEBAR ─────────────────────────────── -->
                 <Border Grid.Column="0"
                         Background="{StaticResource BrushFondoPanel}"
                         BorderBrush="#0F3460" BorderThickness="0,0,1,0">
@@ -165,19 +176,22 @@
                                     <TextBlock Text="Cierre de Caja"/>
                                 </StackPanel>
                             </Button>
-                            <Button Style="{StaticResource BtnNav}" Margin="0,0,0,2">
+                            <Button Style="{StaticResource BtnNav}" Margin="0,0,0,2"
+                                    Command="{Binding NavInformePrepagoCommand}">
                                 <StackPanel Orientation="Horizontal">
                                     <Ellipse Width="7" Height="7" Fill="{StaticResource BrushTextoSecun}" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="Informe Prepago"/>
                                 </StackPanel>
                             </Button>
-                            <Button Style="{StaticResource BtnNav}" Margin="0,0,0,2">
+                            <Button Style="{StaticResource BtnNav}" Margin="0,0,0,2"
+                                    Command="{Binding NavInformeTanqueLlenoCommand}">
                                 <StackPanel Orientation="Horizontal">
                                     <Ellipse Width="7" Height="7" Fill="{StaticResource BrushTextoSecun}" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="Informe Tanque Lleno"/>
                                 </StackPanel>
                             </Button>
-                            <Button Style="{StaticResource BtnNav}">
+                            <Button Style="{StaticResource BtnNav}"
+                                    Command="{Binding NavUsoBombasCommand}">
                                 <StackPanel Orientation="Horizontal">
                                     <Ellipse Width="7" Height="7" Fill="{StaticResource BrushTextoSecun}" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="Uso por Bomba"/>
@@ -204,125 +218,191 @@
                     </Grid>
                 </Border>
 
-                <!-- CONTENIDO PRINCIPAL -->
-                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Margin="16,16,16,16">
+                <!-- ── CONTENIDO PRINCIPAL ─────────────────── -->
+                <Grid Grid.Column="1">
 
-                        <!-- ESTADO DE BOMBAS -->
-                        <TextBlock Text="ESTADO DE BOMBAS" Style="{StaticResource TextoSeccion}"/>
-                        <UniformGrid Columns="2" Margin="0,0,0,14">
-                            <local:BombaCard DataContext="{Binding Bombas[0]}" Margin="0,0,5,5"/>
-                            <local:BombaCard DataContext="{Binding Bombas[1]}" Margin="5,0,0,5"/>
-                            <local:BombaCard DataContext="{Binding Bombas[2]}" Margin="0,5,5,0"/>
-                            <local:BombaCard DataContext="{Binding Bombas[3]}" Margin="5,5,0,0"/>
-                        </UniformGrid>
+                    <!-- Vista: Panel de Bombas (default, visible cuando VistaActual es null) -->
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer.Style>
+                            <Style TargetType="ScrollViewer">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding VistaActual}" Value="Historial">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding VistaActual}" Value="CierreCaja">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding VistaActual}" Value="Informe">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding VistaActual}" Value="UsoBombas">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ScrollViewer.Style>
+                        <StackPanel Margin="16,16,16,16">
+                            <!-- ESTADO DE BOMBAS -->
+                            <TextBlock Text="ESTADO DE BOMBAS" Style="{StaticResource TextoSeccion}"/>
+                            <UniformGrid Columns="2" Margin="0,0,0,14">
+                                <local:BombaCard DataContext="{Binding Bombas[0]}" Margin="0,0,5,5"/>
+                                <local:BombaCard DataContext="{Binding Bombas[1]}" Margin="5,0,0,5"/>
+                                <local:BombaCard DataContext="{Binding Bombas[2]}" Margin="0,5,5,0"/>
+                                <local:BombaCard DataContext="{Binding Bombas[3]}" Margin="5,5,0,0"/>
+                            </UniformGrid>
 
-                        <!-- STATS ROW -->
-                        <UniformGrid Columns="3" Margin="0,0,0,14">
-                            <!-- Ingresos hoy -->
-                            <Border Margin="0,0,5,0" Padding="10,10" CornerRadius="8"
+                            <!-- STATS ROW -->
+                            <UniformGrid Columns="3" Margin="0,0,0,14">
+                                <Border Margin="0,0,5,0" Padding="10,10" CornerRadius="8"
+                                        Background="{StaticResource BrushFondoPanel}"
+                                        BorderBrush="#0F3460" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="Ingresos hoy" Style="{StaticResource TextoLabel}"/>
+                                        <TextBlock Text="{Binding TotalHoy, Converter={StaticResource QuetzalConv}}"
+                                                   FontSize="18" FontWeight="Medium" Foreground="#27C93F"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Margin="5,0,5,0" Padding="10,10" CornerRadius="8"
+                                        Background="{StaticResource BrushFondoPanel}"
+                                        BorderBrush="#0F3460" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="Servicios hoy" Style="{StaticResource TextoLabel}"/>
+                                        <TextBlock Text="{Binding ServiciosHoy}"
+                                                   FontSize="18" FontWeight="Medium"
+                                                   Foreground="{StaticResource BrushTexto}"/>
+                                        <TextBlock FontSize="10" Foreground="{StaticResource BrushTextoSecun}" Margin="0,2,0,0">
+                                            <Run Text="{Binding ServiciosPrepago}"/>
+                                            <Run Text=" prepago · "/>
+                                            <Run Text="{Binding ServiciosTanqueLleno}"/>
+                                            <Run Text=" lleno"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                                <Border Margin="5,0,0,0" Padding="10,10" CornerRadius="8"
+                                        Background="{StaticResource BrushFondoPanel}"
+                                        BorderBrush="#0F3460" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="Bomba más usada" Style="{StaticResource TextoLabel}"/>
+                                        <TextBlock Text="{Binding BombaLider}"
+                                                   FontSize="18" FontWeight="Medium"
+                                                   Foreground="{StaticResource BrushAcento}"/>
+                                        <TextBlock Text="{Binding BombaLiderServicios, StringFormat='{}{0} servicios totales'}"
+                                                   FontSize="10" Foreground="{StaticResource BrushTextoSecun}" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </UniformGrid>
+
+                            <!-- FORMULARIO -->
+                            <TextBlock Text="INICIAR SERVICIO" Style="{StaticResource TextoSeccion}"/>
+                            <Border Padding="12,12" CornerRadius="10"
                                     Background="{StaticResource BrushFondoPanel}"
                                     BorderBrush="#0F3460" BorderThickness="1">
                                 <StackPanel>
-                                    <TextBlock Text="Ingresos hoy" Style="{StaticResource TextoLabel}"/>
-                                    <TextBlock Text="{Binding TotalHoy, Converter={StaticResource QuetzalConv}}"
-                                               FontSize="18" FontWeight="Medium" Foreground="#27C93F"/>
-                                    <TextBlock Text="↑ 14% vs ayer" FontSize="10"
-                                               Foreground="{StaticResource BrushTextoSecun}" Margin="0,2,0,0"/>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Nombre del cliente" Style="{StaticResource TextoLabel}"/>
+                                            <TextBox Text="{Binding ClienteNuevo, UpdateSourceTrigger=PropertyChanged}" Height="28"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Bomba" Style="{StaticResource TextoLabel}"/>
+                                            <ComboBox ItemsSource="{Binding BombasLibres}"
+                                                      SelectedItem="{Binding BombaSeleccionada}"
+                                                      DisplayMemberPath="NombreBomba"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Tipo de servicio" Style="{StaticResource TextoLabel}"/>
+                                            <ComboBox SelectedIndex="{Binding TipoSeleccionado}">
+                                                <ComboBoxItem Content="Prepago"/>
+                                                <ComboBoxItem Content="Tanque lleno"/>
+                                            </ComboBox>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Monto (Q) — Solo prepago" Style="{StaticResource TextoLabel}"/>
+                                            <TextBox Text="{Binding MontoPrepago, UpdateSourceTrigger=PropertyChanged}"
+                                                     IsEnabled="{Binding EsPrepago}" Height="28"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Content="Cancelar" Style="{StaticResource BtnSecundario}"
+                                                Margin="0,0,6,0" Command="{Binding CancelarCommand}"/>
+                                        <Button Content="Iniciar Servicio →" Style="{StaticResource BtnPrimario}"
+                                                Command="{Binding IniciarServicioCommand}"/>
+                                    </StackPanel>
                                 </StackPanel>
                             </Border>
-                            <!-- Servicios hoy -->
-                            <Border Margin="5,0,5,0" Padding="10,10" CornerRadius="8"
-                                    Background="{StaticResource BrushFondoPanel}"
-                                    BorderBrush="#0F3460" BorderThickness="1">
-                                <StackPanel>
-                                    <TextBlock Text="Servicios hoy" Style="{StaticResource TextoLabel}"/>
-                                    <TextBlock Text="{Binding ServiciosHoy}"
-                                               FontSize="18" FontWeight="Medium"
-                                               Foreground="{StaticResource BrushTexto}"/>
-                                    <TextBlock FontSize="10" Foreground="{StaticResource BrushTextoSecun}" Margin="0,2,0,0">
-                                        <Run Text="{Binding ServiciosPrepago}"/>
-                                        <Run Text=" prepago · "/>
-                                        <Run Text="{Binding ServiciosTanqueLleno}"/>
-                                        <Run Text=" lleno"/>
-                                    </TextBlock>
-                                </StackPanel>
-                            </Border>
-                            <!-- Bomba más usada -->
-                            <Border Margin="5,0,0,0" Padding="10,10" CornerRadius="8"
-                                    Background="{StaticResource BrushFondoPanel}"
-                                    BorderBrush="#0F3460" BorderThickness="1">
-                                <StackPanel>
-                                    <TextBlock Text="Bomba más usada" Style="{StaticResource TextoLabel}"/>
-                                    <TextBlock Text="{Binding BombaLider}"
-                                               FontSize="18" FontWeight="Medium"
-                                               Foreground="{StaticResource BrushAcento}"/>
-                                    <TextBlock Text="{Binding BombaLiderServicios, StringFormat='{}{0} servicios totales'}"
-                                               FontSize="10" Foreground="{StaticResource BrushTextoSecun}" Margin="0,2,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </UniformGrid>
+                        </StackPanel>
+                    </ScrollViewer>
 
-                        <!-- FORMULARIO NUEVO SERVICIO -->
-                        <TextBlock Text="INICIAR SERVICIO" Style="{StaticResource TextoSeccion}"/>
-                        <Border Padding="11,11" CornerRadius="10"
-                                Background="{StaticResource BrushFondoPanel}"
-                                BorderBrush="#0F3460" BorderThickness="1">
-                            <StackPanel>
-                                <!-- Fila 1: cliente + bomba -->
-                                <Grid Margin="0,0,0,8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/><ColumnDefinition Width="8"/><ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Nombre del cliente" Style="{StaticResource TextoLabel}"/>
-                                        <TextBox Text="{Binding ClienteNuevo, UpdateSourceTrigger=PropertyChanged}"
-                                                 Height="36"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="2">
-                                        <TextBlock Text="Bomba" Style="{StaticResource TextoLabel}"/>
-                                        <ComboBox ItemsSource="{Binding BombasLibres}"
-                                                  SelectedItem="{Binding BombaSeleccionada}" Height="35">
-                                            <ComboBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding NombreBomba}"/>
-                                                </DataTemplate>
-                                            </ComboBox.ItemTemplate>
-                                        </ComboBox>
-                                    </StackPanel>
-                                </Grid>
+                    <!-- Vista: Historial -->
+                    <local:HistorialView>
+                        <local:HistorialView.Style>
+                            <Style TargetType="UserControl">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding VistaActual}" Value="Historial">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </local:HistorialView.Style>
+                    </local:HistorialView>
 
-                                <!-- Fila 2: tipo + monto -->
-                                <Grid Margin="0,0,0,8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/><ColumnDefinition Width="8"/><ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Tipo de servicio" Style="{StaticResource TextoLabel}"/>
-                                        <ComboBox SelectedIndex="{Binding TipoSeleccionado}" Height="36">
-                                            <ComboBoxItem Content="Prepago"/>
-                                            <ComboBoxItem Content="Tanque lleno"/>
-                                        </ComboBox>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="2">
-                                        <TextBlock Text="Monto (Q) — Solo prepago" Style="{StaticResource TextoLabel}"/>
-                                        <TextBox Text="{Binding MontoPrepago, UpdateSourceTrigger=PropertyChanged}"
-                                                 IsEnabled="{Binding EsPrepago}" Height="36"/>
-                                    </StackPanel>
-                                </Grid>
+                    <!-- Vista: Cierre de Caja -->
+                    <local:CierreCajaView>
+                        <local:CierreCajaView.Style>
+                            <Style TargetType="UserControl">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding VistaActual}" Value="CierreCaja">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </local:CierreCajaView.Style>
+                    </local:CierreCajaView>
 
-                                <!-- Botones -->
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <Button Content="Cancelar" Style="{StaticResource BtnSecundario}"
-                                            Margin="0,0,6,0" Command="{Binding CancelarCommand}"/>
-                                    <Button Content="Iniciar Servicio →" Style="{StaticResource BtnPrimario}"
-                                            Command="{Binding IniciarServicioCommand}"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
+                    <!-- Vista: Informe (Prepago o Tanque Lleno) -->
+                    <local:InformeView>
+                        <local:InformeView.Style>
+                            <Style TargetType="UserControl">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding VistaActual}" Value="Informe">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </local:InformeView.Style>
+                    </local:InformeView>
 
-                    </StackPanel>
-                </ScrollViewer>
+                    <!-- Vista: Uso por Bomba -->
+                    <local:UsoBombasView>
+                        <local:UsoBombasView.Style>
+                            <Style TargetType="UserControl">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding VistaActual}" Value="UsoBombas">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </local:UsoBombasView.Style>
+                    </local:UsoBombasView>
+
+                </Grid>
 
             </Grid>
         </Grid>

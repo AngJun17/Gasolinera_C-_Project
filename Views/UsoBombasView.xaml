@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="GasoStation.Views.UsoBombasView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:GasoStation.Views"
+             mc:Ignorable="d"
+             Height="450" Width="800">
+    <StackPanel Margin="16,16,16,16">
+        <TextBlock Text="USO POR BOMBA" Style="{StaticResource TextoSeccion}"/>
+        <ItemsControl ItemsSource="{Binding UsoBombas}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="0,0,0,8" Padding="14,12" CornerRadius="10"
+                            Background="{StaticResource BrushFondoPanel}"
+                            BorderBrush="{StaticResource BrushBorde}" BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding Nombre}"
+                                       FontSize="15" FontWeight="Medium"
+                                       Foreground="{StaticResource BrushAcento}"
+                                       VerticalAlignment="Center"/>
+                            <!-- Barra de uso relativo -->
+                            <Border Grid.Column="1" Height="8" CornerRadius="4"
+                                    Background="{StaticResource BrushFondoInput}"
+                                    VerticalAlignment="Center" Margin="0,0,16,0"
+                                    ClipToBounds="True">
+                                <Border HorizontalAlignment="Left" CornerRadius="4"
+                                        Width="{Binding AnchoBarraUso}">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Color="#E94560" Offset="0"/>
+                                            <GradientStop Color="#FF8FA3" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                            </Border>
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding TotalServicios, StringFormat='{}{0} servicios'}"
+                                           FontSize="12" FontWeight="Medium"/>
+                                <TextBlock Text="{Binding EsLider}" FontSize="10"
+                                           Foreground="{StaticResource BrushTextoSecun}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding TotalMonto, StringFormat='Q {0:N2}'}"
+                                           FontSize="12" FontWeight="Medium" Foreground="#27C93F"/>
+                                <TextBlock Text="recaudado" FontSize="10"
+                                           Foreground="{StaticResource BrushTextoSecun}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

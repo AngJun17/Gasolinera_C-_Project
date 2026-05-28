@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace GasoStation.Views
 {
     /// <summary>
-    /// Interaction logic for HistorialView.xaml
+    /// Interaction logic for UsoBombasView.xaml
     /// </summary>
-    public partial class HistorialView : UserControl
+    public partial class UsoBombasView : UserControl
     {
-        public HistorialView()
+        public UsoBombasView()
         {
             InitializeComponent();
         }

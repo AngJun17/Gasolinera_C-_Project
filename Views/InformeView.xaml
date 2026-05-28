@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="GasoStation.Views.InformeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:GasoStation.Views"
+             mc:Ignorable="d"
+             Height="450" Width="800">
+    <StackPanel Margin="16,16,16,16">
+        <TextBlock Text="{Binding InformeTitulo}" Style="{StaticResource TextoSeccion}"/>
+
+        <!-- Stats -->
+        <UniformGrid Columns="2" Margin="0,0,0,12">
+            <Border Margin="0,0,5,0" Padding="12,10" CornerRadius="8"
+                    Background="{StaticResource BrushFondoPanel}"
+                    BorderBrush="{StaticResource BrushBorde}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Total servicios" Style="{StaticResource TextoLabel}"/>
+                    <TextBlock Text="{Binding InformeTotalServicios}"
+                               FontSize="20" FontWeight="Medium" Foreground="{StaticResource BrushTexto}"/>
+                </StackPanel>
+            </Border>
+            <Border Margin="5,0,0,0" Padding="12,10" CornerRadius="8"
+                    Background="{StaticResource BrushFondoPanel}"
+                    BorderBrush="{StaticResource BrushBorde}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Total recaudado" Style="{StaticResource TextoLabel}"/>
+                    <TextBlock Text="{Binding InformeTotalMonto, StringFormat='Q {0:N2}'}"
+                               FontSize="20" FontWeight="Medium" Foreground="#27C93F"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- Tabla -->
+        <Border Background="{StaticResource BrushFondoPanel}" CornerRadius="10"
+                BorderBrush="{StaticResource BrushBorde}" BorderThickness="1">
+            <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Grid Margin="12,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="130"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Cliente"  Style="{StaticResource TextoLabel}"/>
+                        <TextBlock Grid.Column="1" Text="Bomba"    Style="{StaticResource TextoLabel}"/>
+                        <TextBlock Grid.Column="2" Text="Litros"   Style="{StaticResource TextoLabel}"/>
+                        <TextBlock Grid.Column="3" Text="Monto"    Style="{StaticResource TextoLabel}"/>
+                        <TextBlock Grid.Column="4" Text="Fecha"    Style="{StaticResource TextoLabel}"/>
+                    </Grid>
+
+                    <ItemsControl ItemsSource="{Binding InformeDetalle}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{StaticResource BrushBorde}" BorderThickness="0,1,0,0" Padding="12,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="130"/>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Cliente}" FontSize="11"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding BombaId, StringFormat='B{0}'}" FontSize="11" Foreground="{StaticResource BrushTextoSecun}"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding LitrosServidos, StringFormat='{}{0:F2} L'}" FontSize="11"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding MontoFinal, StringFormat='Q {0:F2}'}" FontSize="11" Foreground="#27C93F"/>
+                                    <TextBlock Grid.Column="4" Text="{Binding FechaHora, StringFormat='dd/MM HH:mm'}" FontSize="11" Foreground="{StaticResource BrushTextoSecun}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </StackPanel>
+</UserControl>

@@ -17,7 +17,7 @@ namespace GasoStation.Views
     /// <summary>
     /// Interaction logic for CierreCajaView.xaml
     /// </summary>
-    public partial class CierreCajaView : Window
+    public partial class CierreCajaView : UserControl
     {
         public CierreCajaView()
         {

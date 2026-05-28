@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace GasoStation.ViewModels
 {
-    internal class UsoBombaItem
+    public class UsoBombaItem
     {
+        public string Nombre { get; set; } = "";
+        public int TotalServicios { get; set; }
+        public decimal TotalMonto { get; set; }
+        public double AnchoBarraUso { get; set; } // px relativo al máximo
+        public string EsLider { get; set; } = "";
     }
 }
