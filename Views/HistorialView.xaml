@@ -1,0 +1,65 @@
+﻿<Window x:Class="GasoStation.Views.HistorialView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GasoStation.Views"
+        mc:Ignorable="d"
+        Title="HistorialView" Height="450" Width="800">
+    <StackPanel Margin="16,16,16,16">
+        <TextBlock Text="HISTORIAL DE ABASTECIMIENTOS" Style="{StaticResource TextoSeccion}"/>
+        <Border Background="{StaticResource BrushFondoPanel}" CornerRadius="10"
+                BorderBrush="{StaticResource BrushBorde}" BorderThickness="1">
+            <ScrollViewer MaxHeight="520" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Historial}">
+                    <!-- Cabecera -->
+                    <ItemsControl.Header>
+                        <Grid Margin="12,10" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="#"       Style="{StaticResource TextoLabel}"/>
+                            <TextBlock Grid.Column="1" Text="Cliente" Style="{StaticResource TextoLabel}"/>
+                            <TextBlock Grid.Column="2" Text="Bomba"   Style="{StaticResource TextoLabel}"/>
+                            <TextBlock Grid.Column="3" Text="Tipo"    Style="{StaticResource TextoLabel}"/>
+                            <TextBlock Grid.Column="4" Text="Litros"  Style="{StaticResource TextoLabel}"/>
+                            <TextBlock Grid.Column="5" Text="Monto"   Style="{StaticResource TextoLabel}"/>
+                            <TextBlock Grid.Column="6" Text="Fecha/Hora" Style="{StaticResource TextoLabel}"/>
+                        </Grid>
+                    </ItemsControl.Header>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{StaticResource BrushBorde}" BorderThickness="0,1,0,0"
+                                    Padding="12,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="130"/>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Id}" FontSize="11" Foreground="{StaticResource BrushTextoSecun}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Cliente}" FontSize="11"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding BombaId, StringFormat='Bomba {0}'}" FontSize="11" Foreground="{StaticResource BrushTextoSecun}"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding Tipo, Converter={StaticResource TipoConv}}" FontSize="11"/>
+                                    <TextBlock Grid.Column="4" Text="{Binding LitrosServidos, StringFormat='{}{0:F2} L'}" FontSize="11"/>
+                                    <TextBlock Grid.Column="5" Text="{Binding MontoFinal, StringFormat='Q {0:F2}'}" FontSize="11" Foreground="#27C93F"/>
+                                    <TextBlock Grid.Column="6" Text="{Binding FechaHora, StringFormat='dd/MM/yyyy HH:mm'}" FontSize="11" Foreground="{StaticResource BrushTextoSecun}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+    </StackPanel>
+</Window>
