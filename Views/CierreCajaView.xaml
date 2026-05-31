@@ -24,7 +24,7 @@
             </StackPanel>
         </Border>
 
-        <!-- Resumen del cierre -->
+        <!-- Resumen cierre -->
         <UniformGrid Columns="3" Margin="0,0,0,12">
             <Border Margin="0,0,5,0" Padding="12,10" CornerRadius="8"
                     Background="{StaticResource BrushFondoPanel}"

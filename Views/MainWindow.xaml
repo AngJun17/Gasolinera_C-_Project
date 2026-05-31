@@ -26,7 +26,7 @@
                 <!-- Content -->
             </Grid.RowDefinitions>
 
-            <!-- ══ TITLE BAR ═══════════════════════════════════ -->
+            <!-- TITLE BAR -->
             <Border Grid.Row="0"
                     Background="{StaticResource BrushFondoPanel}"
                     BorderBrush="#0F3460" BorderThickness="0,0,0,1"
@@ -131,7 +131,7 @@
                 </Grid>
             </Border>
 
-            <!-- ══ BODY ════════════════════════════════════════ -->
+            <!-- BODY  -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="190"/>
@@ -140,7 +140,7 @@
                     <!-- Main content -->
                 </Grid.ColumnDefinitions>
 
-                <!-- ── SIDEBAR ─────────────────────────────── -->
+                <!-- SIDEBAR -->
                 <Border Grid.Column="0"
                         Background="{StaticResource BrushFondoPanel}"
                         BorderBrush="#0F3460" BorderThickness="0,0,1,0">
@@ -218,7 +218,7 @@
                     </Grid>
                 </Border>
 
-                <!-- ── CONTENIDO PRINCIPAL ─────────────────── -->
+                <!-- CONTENIDO PRINCIPAL -->
                 <Grid Grid.Column="1">
 
                     <!-- Vista: Panel de Bombas (default, visible cuando VistaActual es null) -->
