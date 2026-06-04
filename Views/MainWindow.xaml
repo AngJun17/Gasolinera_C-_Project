@@ -307,7 +307,7 @@
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Grid.Column="0">
                                             <TextBlock Text="Nombre del cliente" Style="{StaticResource TextoLabel}"/>
-                                            <TextBox Text="{Binding ClienteNuevo, UpdateSourceTrigger=PropertyChanged}" Height="28"/>
+                                            <TextBox Text="{Binding ClienteNuevo, UpdateSourceTrigger=PropertyChanged}" Height="38"/>
                                         </StackPanel>
                                         <StackPanel Grid.Column="2">
                                             <TextBlock Text="Bomba" Style="{StaticResource TextoLabel}"/>
@@ -332,7 +332,7 @@
                                         <StackPanel Grid.Column="2">
                                             <TextBlock Text="Monto (Q) — Solo prepago" Style="{StaticResource TextoLabel}"/>
                                             <TextBox Text="{Binding MontoPrepago, UpdateSourceTrigger=PropertyChanged}"
-                                                     IsEnabled="{Binding EsPrepago}" Height="28"/>
+                                                     IsEnabled="{Binding EsPrepago}" Height="38"/>
                                         </StackPanel>
                                     </Grid>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

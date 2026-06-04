@@ -7,6 +7,10 @@ namespace GasoStation.ViewModels
     {
         public int Id { get; }
         public string NombreBomba => $"Bomba {Id}";
+        public override string ToString()
+        {
+            return NombreBomba;
+        }
 
         // Estado 
         private EstadoBomba _estado = EstadoBomba.Libre;

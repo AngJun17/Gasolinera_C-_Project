@@ -3,6 +3,7 @@ using System.IO.Ports;
 using System.Text.Json;
 using System.Threading.Tasks;
 using GasoStation.Models;
+using System.Text.Json.Serialization;
 
 namespace GasoStation.Services
 {
@@ -59,7 +60,13 @@ namespace GasoStation.Services
             try
             {
                 string linea = _port.ReadLine().Trim();
-                var respuesta = JsonSerializer.Deserialize<RespuestaBomba>(linea);
+                var respuesta = JsonSerializer.Deserialize<RespuestaBomba>(
+                    linea,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
                 if (respuesta != null)
                     MensajeRecibido?.Invoke(respuesta);
             }

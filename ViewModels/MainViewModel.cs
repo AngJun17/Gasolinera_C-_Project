@@ -176,6 +176,9 @@ namespace GasoStation.ViewModels
 
         private async void IniciarServicio()
         {
+            int montoQ = (int)MontoPrepago;
+
+            int ml = (int)((MontoPrepago / 30m) * 300m);
             if (BombaSeleccionada == null) return;
             var tipo = EsPrepago ? TipoServicio.Prepago : TipoServicio.TanqueLleno;
             var litros = EsPrepago && PrecioLitro > 0 ? MontoPrepago / PrecioLitro : 0;
@@ -195,14 +198,17 @@ namespace GasoStation.ViewModels
             if (ModoSimulacion)
                 _simulador.IniciarBomba(BombaSeleccionada.Id, EsPrepago ? "prepago" : "tanque_lleno", litros);
             else
-                await _arduino.EnviarComandoAsync(new ComandoBomba
-                {
-                    tipo = "iniciar",
-                    bomba_id = BombaSeleccionada.Id,
-                    modo = EsPrepago ? "prepago" : "tanque_lleno",
-                    litros_max = litros
-                });
-
+                await _arduino.EnviarComandoAsync(
+                    new ComandoBomba
+                    {
+                        cmd = "iniciar",
+                        bomba = BombaSeleccionada.Id,
+                        modo = EsPrepago
+                            ? "prepago"
+                            : "lleno",
+                        q = montoQ,
+                        ml = ml
+                    });
             LimpiarFormulario();
             ActualizarBombasLibres();
         }
@@ -211,30 +217,60 @@ namespace GasoStation.ViewModels
         {
             if (bomba == null || !bomba.EstaActiva) return;
             if (ModoSimulacion) _simulador.DetenerBomba(bomba.Id);
-            else await _arduino.EnviarComandoAsync(new ComandoBomba { tipo = "detener", bomba_id = bomba.Id });
+            else await _arduino.EnviarComandoAsync(
+                new ComandoBomba
+                {
+                    cmd = "stop"
+                });
         }
 
         private void OnMensajeArduino(RespuestaBomba resp)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                var bomba = Bombas.FirstOrDefault(b => b.Id == resp.bomba_id);
-                if (bomba == null) return;
-                bomba.ActualizarProgreso(resp.litros_servidos);
+                var bomba =
+                    Bombas.FirstOrDefault(
+                        b => b.Id == resp.bomba);
 
-                if (resp.completado)
+                if (bomba == null)
+                    return;
+
+                if (resp.estado == "llenando")
                 {
-                    var registros = _historial.ObtenerTodos();
-                    var ultimo = registros.LastOrDefault(a => a.BombaId == resp.bomba_id && !a.Completado);
+                    bomba.ActualizarProgreso(
+                        (decimal)resp.gal);
+                }
+
+                if (resp.estado == "finalizada")
+                {
+                    var registros =
+                        _historial.ObtenerTodos();
+
+                    var ultimo =
+                        registros.LastOrDefault(
+                            a =>
+                                a.BombaId == resp.bomba &&
+                                !a.Completado);
+
                     if (ultimo != null)
                     {
-                        ultimo.LitrosServidos = resp.litros_servidos;
-                        ultimo.MontoFinal = resp.litros_servidos * PrecioLitro;
+                        ultimo.LitrosServidos =
+                            (decimal)resp.gal;
+
+                        ultimo.MontoFinal =
+                            resp.q;
+
                         ultimo.Completado = true;
-                        _historial.Actualizar(ultimo);
+
+                        _historial.Actualizar(
+                            ultimo);
                     }
-                    bomba.FinalizarServicio(bomba.ClienteActual);
+
+                    bomba.FinalizarServicio(
+                        bomba.ClienteActual);
+
                     ActualizarBombasLibres();
+
                     ActualizarEstadisticas();
                 }
             });

@@ -1,21 +1,23 @@
 namespace GasoStation.Models
 {
-    // Mensaje que el panel central ENVÍA al Arduino
     public class ComandoBomba
     {
-        public string tipo { get; set; } = "";       // "iniciar" | "detener"
-        public int bomba_id { get; set; }
-        public string modo { get; set; } = "";        // "prepago" | "tanque_lleno"
-        public decimal litros_max { get; set; }       // Solo para prepago
+        public string cmd { get; set; } = "";
+        public int bomba { get; set; }
+        public string modo { get; set; } = "";
+        public int q { get; set; }
+        public int ml { get; set; }
     }
 
-    // Mensaje que el Arduino DEVUELVE al panel
     public class RespuestaBomba
     {
-        public string evento { get; set; } = "";      // "progreso" | "completado" | "error"
-        public int bomba_id { get; set; }
-        public decimal litros_servidos { get; set; }
-        public bool completado { get; set; }
-        public string? mensaje { get; set; }
+        public int bomba { get; set; }
+        public string estado { get; set; } = "";
+        public int q { get; set; }
+        public int qt { get; set; }
+        public float gal { get; set; }
+        public float galt { get; set; }
+        public string? error { get; set; }
+        public int[]? niveles { get; set; }
     }
 }
